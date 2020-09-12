@@ -1,0 +1,124 @@
+{
+  "rows": [
+    {
+      "keys": [
+        {"top": "Esc"},
+        {"isGap": true},
+        {"top": "F1"},
+        {"top": "F2"},
+        {"top": "F3"},
+        {"top": "F4"},
+        {"isGap": true, "width": 0.5},
+        {"top": "F5"},
+        {"top": "F6"},
+        {"top": "F7"},
+        {"top": "F8"},
+        {"isGap": true, "width": 0.5},
+        {"top": "F9"},
+        {"top": "F10"},
+        {"top": "F11"},
+        {"top": "F12"},
+        {"isGap": true, "width": 0.25},
+        {"top": "PrtSc"},
+        {"top": "ScrLk"},
+        {"top": "Pause", "bottom": "Break"}
+      ]
+    },
+    {"height": 0.5},
+    {
+      "keys": [
+        {"top": "~", "bottom": "`"},
+        {"top": "!", "bottom": "1"},
+        {"top": "@", "bottom": "2"},
+        {"top": "#", "bottom": "3"},
+        {"top": "$", "bottom": "4"},
+        {"top": "%", "bottom": "5"},
+        {"top": "^", "bottom": "6"},
+        {"top": "&", "bottom": "7"},
+        {"top": "*", "bottom": "8"},
+        {"top": "(", "bottom": "9"},
+        {"top": ")", "bottom": "0"},
+        {"top": "_", "bottom": "-"},
+        {"top": "+", "bottom": "="},
+        {"top": "Backspace", "width": 2},
+        {"isGap": true, "width": 0.25},
+        {"top": "Insert"},
+        {"top": "Home"},
+        {"top": "PgUp"}
+      ]
+    },
+    {
+      "keys": [
+        {"top": "Tab", "width": 1.5},
+        {"top": "Q"},
+        {"top": "W"},
+        {"top": "E"},
+        {"top": "R"},
+        {"top": "T"},
+        {"top": "Y"},
+        {"top": "U"},
+        {"top": "I"},
+        {"top": "O"},
+        {"top": "P"},
+        {"top": "{", "bottom": "["},
+        {"top": "}", "bottom": "]"},
+        {"top": "|", "bottom": "\\", "width": 1.5},
+        {"isGap": true, "width": 0.25},
+        {"top": "Delete"},
+        {"top": "End"},
+        {"top": "PgDn"}
+      ]
+    },
+    {
+      "keys": [
+        {"top": "Caps Lock", "width": 1.75},
+        {"top": "A"},
+        {"top": "S"},
+        {"top": "D"},
+        {"top": "F"},
+        {"top": "G"},
+        {"top": "H"},
+        {"top": "J"},
+        {"top": "K"},
+        {"top": "L"},
+        {"top": ":", "bottom": ";"},
+        {"top": "\"", "bottom": "'"},
+        {"top": "Enter", "width": 2.25}
+      ]
+    },
+    {
+      "keys": [
+        {"top": "Shift", "width": 2.25},
+        {"top": "Z"},
+        {"top": "X"},
+        {"top": "C"},
+        {"top": "V"},
+        {"top": "B"},
+        {"top": "N"},
+        {"top": "M"},
+        {"top": "<", "bottom": ","},
+        {"top": ">", "bottom": "."},
+        {"top": "?", "bottom": "/"},
+        {"top": "Shift", "width": 2.75},
+        {"isGap": true, "width": 1.25},
+        {"top": "↑"}
+      ]
+    },
+    {
+      "keys": [
+        {"top": "Ctrl", "width": 1.25},
+        {"top": "⊞", "width": 1.25},
+        {"top": "Alt", "width": 1.25},
+        {"width": 6.25},
+        {"top": "Alt", "width": 1.25},
+        {"top": "⊞", "width": 1.25},
+        {"top": "☰", "width": 1.25},
+        {"top": "Ctrl", "width": 1.25},
+        {"isGap": true, "width": 0.25},
+        {"top": "←"},
+        {"top": "↓"},
+        {"top": "→"}
+      ]
+    }
+  ]
+}

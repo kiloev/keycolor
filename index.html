@@ -59,6 +59,9 @@
   const { useEffect, useState } = preactHooks;
   const html = htm.bind(h);
 
+  const LAYOUTS = {
+    tkl: 'Ten Key-Less'
+  };
   const MULTIPLIERS = {
     KEYBOARD_PADDING: .25,
     KEYBOARD_FONT: .25,
@@ -66,140 +69,25 @@
     KEY_PADDING_BOTTOM: .2
   };
   const DEFAULT_UNIT_SIZE = 50;
-  const DEFAULT_KEY_COLOR = {
+  const DEFAULT_COLOR = {
     BASE: '#050505',
     TEXT: '#F5F5F5'
   };
-  const DEFAULT_LAYOUT = {
-    base: '#050505',
-    rows: [
-      {
-        keys: [
-          {top: 'Esc'},
-          {isGap: true},
-          {top: 'F1'},
-          {top: 'F2'},
-          {top: 'F3'},
-          {top: 'F4'},
-          {isGap: true, width: 0.5},
-          {top: 'F5'},
-          {top: 'F6'},
-          {top: 'F7'},
-          {top: 'F8'},
-          {isGap: true, width: 0.5},
-          {top: 'F9'},
-          {top: 'F10'},
-          {top: 'F11'},
-          {top: 'F12'},
-          {isGap: true, width: .25},
-          {top: 'PrtSc'},
-          {top: 'ScrLk'},
-          {top: 'Pause', bottom: 'Break'}
-        ]
-      },
-      {height: 0.5},
-      {
-        keys: [
-          {top: '~', bottom: '`'},
-          {top: '!', bottom: '1'},
-          {top: '@', bottom: '2'},
-          {top: '#', bottom: '3'},
-          {top: '$', bottom: '4'},
-          {top: '%', bottom: '5'},
-          {top: '^', bottom: '6'},
-          {top: '&', bottom: '7'},
-          {top: '*', bottom: '8'},
-          {top: '(', bottom: '9'},
-          {top: ')', bottom: '0'},
-          {top: '_', bottom: '-'},
-          {top: '+', bottom: '='},
-          {top: 'Backspace', width: 2},
-          {isGap: true, width: .25},
-          {top: 'Insert'},
-          {top: 'Home'},
-          {top: 'PgUp'}
-        ]
-      },
-      {
-        keys: [
-          {top: 'Tab', width: 1.5},
-          {top: 'Q'},
-          {top: 'W'},
-          {top: 'E'},
-          {top: 'R'},
-          {top: 'T'},
-          {top: 'Y'},
-          {top: 'U'},
-          {top: 'I'},
-          {top: 'O'},
-          {top: 'P'},
-          {top: '{', bottom: '['},
-          {top: '}', bottom: ']'},
-          {top: '|', bottom: '\\', width: 1.5},
-          {isGap: true, width: .25},
-          {top: 'Delete'},
-          {top: 'End'},
-          {top: 'PgDn'}
-        ]
-      },
-      {
-        keys: [
-          {top: 'Caps Lock', width: 1.75},
-          {top: 'A'},
-          {top: 'S'},
-          {top: 'D'},
-          {top: 'F'},
-          {top: 'G'},
-          {top: 'H'},
-          {top: 'J'},
-          {top: 'K'},
-          {top: 'L'},
-          {top: ':', bottom: ';'},
-          {top: '"', bottom: "'"},
-          {top: 'Enter', width: 2.25}
-        ]
-      },
-      {
-        keys: [
-          {top: 'Shift', width: 2.25},
-          {top: 'Z'},
-          {top: 'X'},
-          {top: 'C'},
-          {top: 'V'},
-          {top: 'B'},
-          {top: 'N'},
-          {top: 'M'},
-          {top: '<', bottom: ','},
-          {top: '>', bottom: '.'},
-          {top: '?', bottom: '/'},
-          {top: 'Shift', width: 2.75},
-          {isGap: true, width: 1.25},
-          {top: '↑'}
-        ],
-      },
-      {
-        keys: [
-          {top: 'Ctrl', width: 1.25},
-          {top: '⊞', width: 1.25},
-          {top: 'Alt', width: 1.25},
-          {width: 6.25},
-          {top: 'Alt', width: 1.25},
-          {top: '⊞', width: 1.25},
-          {top: '☰', width: 1.25},
-          {top: 'Ctrl', width: 1.25},
-          {isGap: true, width: .25},
-          {top: '←'},
-          {top: '↓'},
-          {top: '→'}
-        ]
-      },
-    ]
-  };
 
   const App = () => {
-    const [layout, setLayout] = useState(DEFAULT_LAYOUT);
+    const [layout, setLayout] = useState(Object.keys(LAYOUTS)[0]);
+    const [keyboard, setKeyboard] = useState();
     const [unitSize, setUnitSize] = useState(DEFAULT_UNIT_SIZE);
     const [selected, setSelected] = useState(new Set());
+
+    useEffect(() => {
+      const fetchLayout = async () => {
+        const response = await fetch(`/${layout}.json`);
+        const data = await response.json();
+        setKeyboard(data);
+      };
+      fetchLayout();
+    }, [layout]);
 
     const getSize = (multiplier) => `${(multiplier || 1) * unitSize}px`;
     const getSelectedKey = (rowIndex, keyIndex) => `${rowIndex}:${keyIndex}`;
@@ -218,72 +106,76 @@
       })
     };
     const actionSelectAll = () => setSelected(new Set(
-      layout.rows.flatMap((row, rowIndex) => row.keys
+      keyboard.rows.flatMap((row, rowIndex) => row.keys
         ? row.keys.map((key, keyIndex) => key.isGap ? null : getSelectedKey(rowIndex, keyIndex)).filter((selectedKey) => selectedKey)
         : [])
     ));
     const actionSelectNone = () => setSelected(new Set());
     const actionSet = (action) => {
-      setLayout((oldLayout) => {
-        const newLayout = JSON.parse(JSON.stringify(oldLayout));
+      setKeyboard((oldKeyboard) => {
+        const newKeyboard = JSON.parse(JSON.stringify(oldKeyboard));
         selected.forEach((selectedKey) => {
           const [rowIndex, keyIndex] = parseSelectedKey(selectedKey);
-          action(newLayout.rows[rowIndex].keys[keyIndex]);
+          action(newKeyboard.rows[rowIndex].keys[keyIndex]);
         });
-        return newLayout;
+        return newKeyboard;
       });
     };
 
-    return html`
-      <h1 class="title">Keycolor</h1>
-      <div
-        class="keyboard"
-        style="padding: ${getSize(MULTIPLIERS.KEYBOARD_PADDING)}; font-size: ${getSize(MULTIPLIERS.KEYBOARD_FONT)}; background-color: ${layout.base}"
-      >
-        ${layout.rows.map((row, rowIndex) => html`
-          <div class="row" style="height: ${getSize(row.height)}">
-            ${row.keys && row.keys.map((key, keyIndex) => key.isGap
-              ? html`
-                <div class="gap" style="width: ${getSize(key.width)}"></div>
-              `
-              : html`
-                <div
-                  class="key ${selected.has(getSelectedKey(rowIndex, keyIndex)) ? 'selected' : ''}"
-                  style="
-                    width: ${getSize(key.width)};
-                    padding: ${getSize(MULTIPLIERS.KEY_PADDING)};
-                    padding-bottom: ${getSize(MULTIPLIERS.KEY_PADDING_BOTTOM)};
-                    color: ${key.text || DEFAULT_KEY_COLOR.TEXT};
-                    background-color: ${key.base || DEFAULT_KEY_COLOR.BASE}
-                  "
-                  onClick="${() => actionSelect(rowIndex, keyIndex)}"
-                >
-                  <div class="wrapper" style="background-color: ${key.base || DEFAULT_KEY_COLOR.BASE}">
-                    <span class="top">${!key.blank && key.top}</span>
-                    <span class="bottom">${!key.blank && key.bottom}</span>
+    return keyboard
+      ? html`
+        <h1 class="title">Keycolor</h1>
+        <div
+          class="keyboard"
+          style="padding: ${getSize(MULTIPLIERS.KEYBOARD_PADDING)}; font-size: ${getSize(MULTIPLIERS.KEYBOARD_FONT)}; background-color: ${keyboard.base || DEFAULT_COLOR.BASE}"
+        >
+          ${keyboard.rows.map((row, rowIndex) => html`
+            <div class="row" style="height: ${getSize(row.height)}">
+              ${row.keys && row.keys.map((key, keyIndex) => key.isGap
+                ? html`
+                  <div class="gap" style="width: ${getSize(key.width)}"></div>
+                `
+                : html`
+                  <div
+                    class="key ${selected.has(getSelectedKey(rowIndex, keyIndex)) ? 'selected' : ''}"
+                    style="
+                      width: ${getSize(key.width)};
+                      padding: ${getSize(MULTIPLIERS.KEY_PADDING)};
+                      padding-bottom: ${getSize(MULTIPLIERS.KEY_PADDING_BOTTOM)};
+                      color: ${key.text || DEFAULT_COLOR.TEXT};
+                      background-color: ${key.base || DEFAULT_COLOR.BASE}
+                    "
+                    onClick="${() => actionSelect(rowIndex, keyIndex)}"
+                  >
+                    <div class="wrapper" style="background-color: ${key.base || DEFAULT_COLOR.BASE}">
+                      <span class="top">${!key.blank && key.top}</span>
+                      <span class="bottom">${!key.blank && key.bottom}</span>
+                    </div>
                   </div>
-                </div>
-              `)}
-          </div>
-        `)}
-      </div>
-      <div class="control">
-        <h3>Selected ${selected.size} keys</h3>
-        <button onClick="${actionSelectAll}">Select all</button>
-        <button onClick="${actionSelectNone}">Clear selection</button>
-        ${
-          selected.size > 0 &&
-          html`
-            <h3>Base color</h3>
-            <input type="color" onChange="${(e) => actionSet((key) => key.base = e.target.value)}" />
-            <h3>Text color</h3>
-            <input type="color" onChange="${(e) => actionSet((key) => key.text = e.target.value)}" />
-            <h3>Blank</h3>
-            <input type="checkbox" onChange="${(e) => actionSet((key) => key.blank = e.target.checked)}" />
-          `
-        }
-     </div>
-    `;
+                `)}
+            </div>
+          `)}
+        </div>
+        <div class="control">
+          <h3>Selected ${selected.size} keys</h3>
+          <button onClick="${actionSelectAll}">Select all</button>
+          <button onClick="${actionSelectNone}">Clear selection</button>
+          ${
+            selected.size > 0 &&
+            html`
+              <h3>Base color</h3>
+              <input type="color" onChange="${(e) => actionSet((key) => key.base = e.target.value)}" />
+              <h3>Text color</h3>
+              <input type="color" onChange="${(e) => actionSet((key) => key.text = e.target.value)}" />
+              <h3>Blank</h3>
+              <input type="checkbox" onChange="${(e) => actionSet((key) => key.blank = e.target.checked)}" />
+            `
+          }
+       </div>
+      `
+      : html `
+        <div>Loading...</div>
+      `;
   };
 
   render(html`<${App}/>`, document.getElementById('app'));
